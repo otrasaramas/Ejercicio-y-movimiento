@@ -15,10 +15,10 @@ export default function ProgressTab() {
   const { data, setData, reset } = useStore();
 
   const stats = [
-    { label: "Racha actual", value: currentStreak(data), suffix: "días", emoji: "🔥" },
-    { label: "Mejor racha", value: longestStreak(data), suffix: "días", emoji: "⭐" },
-    { label: "Días totales", value: totalCompleted(data), suffix: "", emoji: "✅" },
-    { label: "Semanas full", value: fullWeeks(data), suffix: "", emoji: "🏅" },
+    { label: "Racha actual", value: currentStreak(data), suffix: "días", emoji: "🔥", bg: "bg-clay" },
+    { label: "Mejor racha", value: longestStreak(data), suffix: "días", emoji: "⭐", bg: "bg-gold" },
+    { label: "Días totales", value: totalCompleted(data), suffix: "", emoji: "✅", bg: "bg-grass" },
+    { label: "Semanas full", value: fullWeeks(data), suffix: "", emoji: "🏅", bg: "bg-sky" },
   ];
 
   // Heatmap de las últimas 5 semanas (35 días)
@@ -44,11 +44,11 @@ export default function ProgressTab() {
         {stats.map((s) => (
           <div
             key={s.label}
-            className="rounded-xl2 bg-white/60 p-4 text-center shadow-sm"
+            className={`rounded-xl2 ${s.bg} p-4 text-center text-espresso shadow-sm`}
           >
             <div className="text-2xl">{s.emoji}</div>
-            <div className="font-serif text-4xl text-espresso">{s.value}</div>
-            <div className="font-sans text-xs text-coffee/50">
+            <div className="font-serif text-4xl font-bold">{s.value}</div>
+            <div className="font-sans text-xs font-medium opacity-70">
               {s.label} {s.suffix && `(${s.suffix})`}
             </div>
           </div>

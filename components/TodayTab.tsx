@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useStore, emptyLog } from "@/lib/store";
 import { energyProfiles, profileForEnergy, muscleForDate } from "@/lib/routine";
-import { fmtLong, todayStr, daysBetween } from "@/lib/dates";
+import { fmtLong, todayStr, daysBetween, addDays } from "@/lib/dates";
 import { currentStreak } from "@/lib/progress";
 import { DayLog, ExerciseLog, RoutinePart, StrengthEntry } from "@/lib/types";
 import { exercisesForMuscle, yogaPoses } from "@/lib/routine";
@@ -12,21 +12,25 @@ import ExerciseLogger from "./ExerciseLogger";
 export default function TodayTab() {
   const { data, getLog, upsertLog } = useStore();
   const today = todayStr();
-  const existing = getLog(today);
-  const [draft, setDraft] = useState<DayLog>(existing ?? emptyLog(today));
 
-  // Mantén sincronizado si cambia el log externo (ej. reset)
-  const log = existing ?? draft;
-  const setLog = (next: DayLog) => {
-    setDraft(next);
-    upsertLog(next);
+  // Fecha que se está registrando (permite anotar días pasados)
+  const [selectedDate, setSelectedDate] = useState(today);
+  const isToday = selectedDate === today;
+  const isPast = selectedDate < today;
+
+  // El registro siempre se lee/escribe en el store por fecha
+  const log = getLog(selectedDate) ?? emptyLog(selectedDate);
+  const setLog = (next: DayLog) => upsertLog(next);
+
+  const goToDate = (d: string) => {
+    if (d <= today) setSelectedDate(d);
   };
 
   const profile = profileForEnergy(log.energy);
-  const muscle = muscleForDate(data.routine, today);
+  const muscle = muscleForDate(data.routine, selectedDate);
   const streak = currentStreak(data);
 
-  const cycleDay = daysBetween(data.cycle.startDate, today) + 1;
+  const cycleDay = daysBetween(data.cycle.startDate, selectedDate) + 1;
   const cycleTotal = data.cycle.weeks * 7;
 
   // Partes activas según energía
@@ -84,29 +88,70 @@ export default function TodayTab() {
     <div className="space-y-6">
       {/* Encabezado */}
       <header>
-        <div className="flex items-center justify-between">
+        <div className="h-2 w-full rounded-full bg-sky stripes-v text-cream/40" />
+        <div className="mt-3 flex items-center justify-between">
           <p className="font-sans text-xs uppercase tracking-[0.2em] text-coffee/50">
-            Mi laboratorio
+            {isToday ? "Mi laboratorio" : "Registrando día pasado"}
           </p>
           {streak > 0 && (
-            <span className="rounded-full bg-clay/15 px-3 py-1 text-xs font-semibold text-clay">
+            <span className="rounded-full bg-clay px-3 py-1 text-xs font-bold text-cream">
               🔥 {streak} {streak === 1 ? "día" : "días"}
             </span>
           )}
         </div>
         <h1 className="mt-1 font-serif text-3xl capitalize leading-tight text-espresso">
-          {fmtLong(today)}
+          {fmtLong(selectedDate)}
         </h1>
         <p className="mt-1 font-sans text-sm text-coffee/60">
           Ciclo «{data.cycle.routineName}» · día {cycleDay} de {cycleTotal} ·
           nivel {data.cycle.level}
         </p>
+
+        {/* Navegación de fechas (registrar días pasados) */}
+        <div className="mt-3 flex items-center gap-2">
+          <button
+            onClick={() => goToDate(addDays(selectedDate, -1))}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-coffee font-bold text-cream"
+            aria-label="Día anterior"
+          >
+            ‹
+          </button>
+          <input
+            type="date"
+            value={selectedDate}
+            max={today}
+            onChange={(e) => e.target.value && goToDate(e.target.value)}
+            className="flex-1 rounded-full border border-coffee/15 bg-white/70 px-3 py-2 text-center font-sans text-sm text-coffee focus:outline-none"
+          />
+          <button
+            onClick={() => goToDate(addDays(selectedDate, 1))}
+            disabled={isToday}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-coffee font-bold text-cream disabled:opacity-30"
+            aria-label="Día siguiente"
+          >
+            ›
+          </button>
+          {!isToday && (
+            <button
+              onClick={() => setSelectedDate(today)}
+              className="rounded-full bg-gold px-3 py-2 font-sans text-xs font-bold text-espresso"
+            >
+              Hoy
+            </button>
+          )}
+        </div>
+        {isPast && (
+          <p className="mt-2 rounded-2xl bg-gold/25 px-4 py-2 font-sans text-xs text-coffee/70">
+            ✍️ Estás anotando un día que se te pasó. Todo lo que registres aquí
+            cuenta para tus rachas y análisis.
+          </p>
+        )}
       </header>
 
       {/* Selector de energía */}
       <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">
-          ¿Cómo está tu energía hoy?
+          {isToday ? "¿Cómo está tu energía hoy?" : "¿Cómo estuvo tu energía?"}
         </h2>
         <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar pb-1">
           {[5, 4, 3, 2, 1, 0].map((lvl) => {

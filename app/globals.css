@@ -9,8 +9,8 @@
 
 html,
 body {
-  background-color: #f5f3ee;
-  color: #1c1b19;
+  background-color: #f4ecd8;
+  color: #16150f;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -23,6 +23,26 @@ h3 {
 }
 h1 {
   letter-spacing: -0.045em;
+}
+
+/* Acentos de rayas (estilo retro del referente) */
+.stripes-h {
+  background-image: repeating-linear-gradient(
+    90deg,
+    currentColor 0,
+    currentColor 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+.stripes-v {
+  background-image: repeating-linear-gradient(
+    0deg,
+    currentColor 0,
+    currentColor 7px,
+    transparent 7px,
+    transparent 14px
+  );
 }
 
 /* Oculta scrollbars horizontales en filas de chips */
