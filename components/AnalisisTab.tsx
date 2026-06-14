@@ -82,10 +82,10 @@ export default function AnalisisTab() {
     <div className="space-y-6">
       <header className="flex items-end justify-between">
         <div>
-          <p className="font-sans text-xs uppercase tracking-[0.2em] text-coffee/50">
+          <p className="font-sans text-xs uppercase tracking-[0.2em] text-cream/60">
             Insights
           </p>
-          <h1 className="font-serif text-4xl text-espresso">Análisis</h1>
+          <h1 className="font-serif text-4xl text-cream">Análisis</h1>
         </div>
         <div className="flex rounded-full bg-coffee p-1">
           {([7, 30] as const).map((r) => (
@@ -120,7 +120,7 @@ export default function AnalisisTab() {
       </div>
 
       {/* Barras de energía por día */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">Energía por día</h2>
         <p className="font-sans text-xs text-coffee/50">
           Altura y color según tu energía (0–5).
@@ -129,7 +129,7 @@ export default function AnalisisTab() {
       </section>
 
       {/* Distribución de energía */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">
           Distribución de energía
         </h2>
@@ -162,7 +162,7 @@ export default function AnalisisTab() {
       </section>
 
       {/* Ánimo después */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">
           Cómo me sentí después
         </h2>
@@ -172,7 +172,7 @@ export default function AnalisisTab() {
       </section>
 
       {/* Progreso de fuerza */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">
           Progreso de ejercicios
         </h2>
@@ -210,7 +210,7 @@ export default function AnalisisTab() {
 
       {/* Timeline: tu camino día por día */}
       <section>
-        <h2 className="mb-3 font-serif text-2xl text-espresso">Tu camino</h2>
+        <h2 className="mb-3 font-serif text-2xl text-cream">Tu camino</h2>
         {timeline.length === 0 ? (
           <p className="font-sans text-sm text-coffee/40">
             Aún no hay registros en este período.
@@ -284,7 +284,7 @@ function DayCard({
   const intensity = Math.round(profileForEnergy(log.energy).intensity * 100);
 
   return (
-    <div className="overflow-hidden rounded-xl2 bg-white/60 shadow-sm">
+    <div className="overflow-hidden rounded-xl2 bg-panel shadow-sm">
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center gap-3 px-4 py-3 text-left"

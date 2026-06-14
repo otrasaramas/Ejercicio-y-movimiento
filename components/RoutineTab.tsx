@@ -107,10 +107,10 @@ export default function RoutineTab() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="font-sans text-xs uppercase tracking-[0.2em] text-coffee/50">
+        <p className="font-sans text-xs uppercase tracking-[0.2em] text-cream/60">
           Estructura
         </p>
-        <h1 className="font-serif text-4xl text-espresso">Mi rutina</h1>
+        <h1 className="font-serif text-4xl text-cream">Mi rutina</h1>
       </header>
 
       {/* Ciclo de prueba */}
@@ -167,7 +167,7 @@ export default function RoutineTab() {
         {data.routine.parts.map((part, i) => (
           <div
             key={part.key}
-            className="rounded-xl2 bg-white/60 p-4 shadow-sm"
+            className="rounded-xl2 bg-panel p-4 shadow-sm"
           >
             <div className="mb-2 flex items-center justify-between">
               <div>
@@ -263,7 +263,7 @@ export default function RoutineTab() {
       {/* Historial de ciclos */}
       {data.cycleHistory.length > 0 && (
         <section>
-          <h2 className="mb-2 font-serif text-2xl text-espresso">
+          <h2 className="mb-2 font-serif text-2xl text-cream">
             Ciclos anteriores
           </h2>
           <div className="space-y-2">

@@ -7,7 +7,13 @@ import {
   useState,
   useCallback,
 } from "react";
-import { AppData, DayLog, MeasurementEntry, WeightEntry } from "./types";
+import {
+  AppData,
+  DayLog,
+  MeasurementEntry,
+  StepEntry,
+  WeightEntry,
+} from "./types";
 import { initialData } from "./routine";
 import { medals } from "./progress";
 import { todayStr } from "./dates";
@@ -22,6 +28,8 @@ interface StoreContextValue {
   getLog: (date: string) => DayLog | undefined;
   addWeight: (entry: WeightEntry) => void;
   addMeasurement: (entry: MeasurementEntry) => void;
+  addStep: (entry: StepEntry) => void;
+  setStepsGoal: (goal: number) => void;
   reset: () => void;
 }
 
@@ -109,6 +117,24 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [setData]
   );
 
+  const addStep = useCallback(
+    (entry: StepEntry) => {
+      setData((prev) => {
+        const others = prev.steps.filter((s) => s.date !== entry.date);
+        return {
+          ...prev,
+          steps: [...others, entry].sort((a, b) => a.date.localeCompare(b.date)),
+        };
+      });
+    },
+    [setData]
+  );
+
+  const setStepsGoal = useCallback(
+    (goal: number) => setData((prev) => ({ ...prev, stepsGoal: goal })),
+    [setData]
+  );
+
   const reset = useCallback(() => {
     setDataState(syncMedals(initialData()));
   }, []);
@@ -123,6 +149,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         getLog,
         addWeight,
         addMeasurement,
+        addStep,
+        setStepsGoal,
         reset,
       }}
     >

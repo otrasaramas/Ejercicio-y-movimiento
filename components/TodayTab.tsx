@@ -90,19 +90,19 @@ export default function TodayTab() {
       <header>
         <div className="h-2 w-full rounded-full bg-sky stripes-v text-cream/40" />
         <div className="mt-3 flex items-center justify-between">
-          <p className="font-sans text-xs uppercase tracking-[0.2em] text-coffee/50">
+          <p className="font-sans text-xs uppercase tracking-[0.2em] text-cream/60">
             {isToday ? "Mi laboratorio" : "Registrando día pasado"}
           </p>
           {streak > 0 && (
-            <span className="rounded-full bg-clay px-3 py-1 text-xs font-bold text-cream">
+            <span className="rounded-full bg-clay px-3 py-1 text-xs font-bold text-espresso">
               🔥 {streak} {streak === 1 ? "día" : "días"}
             </span>
           )}
         </div>
-        <h1 className="mt-1 font-serif text-3xl capitalize leading-tight text-espresso">
+        <h1 className="mt-1 font-serif text-3xl capitalize leading-tight text-cream">
           {fmtLong(selectedDate)}
         </h1>
-        <p className="mt-1 font-sans text-sm text-coffee/60">
+        <p className="mt-1 font-sans text-sm text-cream/60">
           Ciclo «{data.cycle.routineName}» · día {cycleDay} de {cycleTotal} ·
           nivel {data.cycle.level}
         </p>
@@ -121,7 +121,7 @@ export default function TodayTab() {
             value={selectedDate}
             max={today}
             onChange={(e) => e.target.value && goToDate(e.target.value)}
-            className="flex-1 rounded-full border border-coffee/15 bg-white/70 px-3 py-2 text-center font-sans text-sm text-coffee focus:outline-none"
+            className="flex-1 rounded-full border border-cream/20 bg-cream px-3 py-2 text-center font-sans text-sm text-coffee focus:outline-none"
           />
           <button
             onClick={() => goToDate(addDays(selectedDate, 1))}
@@ -141,7 +141,7 @@ export default function TodayTab() {
           )}
         </div>
         {isPast && (
-          <p className="mt-2 rounded-2xl bg-gold/25 px-4 py-2 font-sans text-xs text-coffee/70">
+          <p className="mt-2 rounded-2xl bg-gold px-4 py-2 font-sans text-xs text-espresso">
             ✍️ Estás anotando un día que se te pasó. Todo lo que registres aquí
             cuenta para tus rachas y análisis.
           </p>
@@ -149,7 +149,7 @@ export default function TodayTab() {
       </header>
 
       {/* Selector de energía */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">
           {isToday ? "¿Cómo está tu energía hoy?" : "¿Cómo estuvo tu energía?"}
         </h2>
@@ -202,7 +202,7 @@ export default function TodayTab() {
 
       {/* Plan sugerido por partes */}
       <section className="space-y-4">
-        <h2 className="font-serif text-2xl text-espresso">
+        <h2 className="font-serif text-2xl text-cream">
           Tu plan de hoy
         </h2>
         {activeParts.map((part, idx) =>
@@ -252,7 +252,7 @@ export default function TodayTab() {
       </section>
 
       {/* Cierre del día */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">Cierre del día</h2>
 
         <label className="mt-3 block font-sans text-sm text-coffee/70">
@@ -323,7 +323,7 @@ function PartCard({
   const doneCount = part.exercises.filter((e) => exLog(e.id)?.done).length;
 
   return (
-    <div className="overflow-hidden rounded-xl2 bg-white/60 shadow-sm">
+    <div className="overflow-hidden rounded-xl2 bg-panel shadow-sm">
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between px-5 py-4 text-left"

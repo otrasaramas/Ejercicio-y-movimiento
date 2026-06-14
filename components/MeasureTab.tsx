@@ -56,18 +56,18 @@ export default function MeasureTab() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="font-sans text-xs uppercase tracking-[0.2em] text-coffee/50">
+        <p className="font-sans text-xs uppercase tracking-[0.2em] text-cream/60">
           Seguimiento mensual
         </p>
-        <h1 className="font-serif text-4xl text-espresso">Mis medidas</h1>
-        <p className="mt-1 font-sans text-sm text-coffee/60">
+        <h1 className="font-serif text-4xl text-cream">Mis medidas</h1>
+        <p className="mt-1 font-sans text-sm text-cream/60">
           Mídete con el metro una vez al mes y compara con el anterior.
         </p>
       </header>
 
       {/* Comparación con el mes pasado */}
       {last && (
-        <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+        <section className="rounded-xl2 bg-panel p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <h2 className="font-serif text-2xl text-espresso">
               {fmtShort(last.date)}
@@ -112,7 +112,7 @@ export default function MeasureTab() {
 
       {/* Gráfica de evolución */}
       {chartPoints.length > 0 && (
-        <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+        <section className="rounded-xl2 bg-panel p-5 shadow-sm">
           <h2 className="font-serif text-2xl text-espresso">Evolución</h2>
           <div className="mt-2 flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
             {fields.map((f) => (
@@ -136,7 +136,7 @@ export default function MeasureTab() {
       )}
 
       {/* Nueva medición */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">Nueva medición</h2>
         <input
           type="date"
@@ -178,7 +178,7 @@ export default function MeasureTab() {
       {/* Historial */}
       {list.length > 0 && (
         <section>
-          <h2 className="mb-2 font-serif text-2xl text-espresso">Historial</h2>
+          <h2 className="mb-2 font-serif text-2xl text-cream">Historial</h2>
           <div className="space-y-1.5">
             {[...list].reverse().map((m) => (
               <div

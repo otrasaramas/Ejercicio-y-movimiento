@@ -33,14 +33,14 @@ export default function WeightTab() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="font-sans text-xs uppercase tracking-[0.2em] text-coffee/50">
+        <p className="font-sans text-xs uppercase tracking-[0.2em] text-cream/60">
           Seguimiento
         </p>
-        <h1 className="font-serif text-4xl text-espresso">Mi peso</h1>
+        <h1 className="font-serif text-4xl text-cream">Mi peso</h1>
       </header>
 
       {/* Resumen */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <div className="flex items-end justify-between">
           <div>
             <p className="font-sans text-xs uppercase tracking-wider text-coffee/50">
@@ -73,7 +73,7 @@ export default function WeightTab() {
       </section>
 
       {/* Registro */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">Registrar peso</h2>
         <div className="mt-3 flex gap-2">
           <input
@@ -103,7 +103,7 @@ export default function WeightTab() {
       {/* Historial */}
       {weights.length > 0 && (
         <section>
-          <h2 className="mb-2 font-serif text-2xl text-espresso">Historial</h2>
+          <h2 className="mb-2 font-serif text-2xl text-cream">Historial</h2>
           <div className="space-y-1.5">
             {[...weights].reverse().map((w) => (
               <div

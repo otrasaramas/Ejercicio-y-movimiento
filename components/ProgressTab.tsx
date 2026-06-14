@@ -33,10 +33,10 @@ export default function ProgressTab() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="font-sans text-xs uppercase tracking-[0.2em] text-coffee/50">
+        <p className="font-sans text-xs uppercase tracking-[0.2em] text-cream/60">
           Resultados
         </p>
-        <h1 className="font-serif text-4xl text-espresso">Tu constancia</h1>
+        <h1 className="font-serif text-4xl text-cream">Tu constancia</h1>
       </header>
 
       {/* Stats */}
@@ -56,7 +56,7 @@ export default function ProgressTab() {
       </div>
 
       {/* Heatmap de constancia */}
-      <section className="rounded-xl2 bg-white/60 p-5 shadow-sm">
+      <section className="rounded-xl2 bg-panel p-5 shadow-sm">
         <h2 className="font-serif text-2xl text-espresso">Últimas 5 semanas</h2>
         <p className="font-sans text-xs text-coffee/50">
           Cada cuadrito es un día. Verde = entrenaste.
@@ -99,7 +99,7 @@ export default function ProgressTab() {
 
       {/* Medallas */}
       <section>
-        <h2 className="mb-3 font-serif text-2xl text-espresso">Medallas</h2>
+        <h2 className="mb-3 font-serif text-2xl text-cream">Medallas</h2>
         <div className="grid grid-cols-2 gap-3">
           {medals.map((m) => {
             const earned = m.earned(data);
@@ -108,8 +108,8 @@ export default function ProgressTab() {
                 key={m.id}
                 className={`rounded-xl2 p-4 text-center transition ${
                   earned
-                    ? "animate-pop bg-gold/20 shadow-sm"
-                    : "bg-sand/60 opacity-60"
+                    ? "animate-pop bg-gold shadow-sm"
+                    : "bg-sand opacity-70"
                 }`}
               >
                 <div
@@ -130,7 +130,7 @@ export default function ProgressTab() {
       </section>
 
       {/* Ajustes / datos */}
-      <section className="rounded-xl2 bg-sand/50 p-4">
+      <section className="rounded-xl2 bg-panel p-4">
         <p className="font-sans text-xs uppercase tracking-wider text-coffee/50">
           Datos
         </p>

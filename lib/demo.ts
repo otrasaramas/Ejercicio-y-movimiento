@@ -63,6 +63,15 @@ export function demoData(): AppData {
     kg -= Math.random() * 0.6;
   }
 
+  // Pasos: últimos 14 días alrededor de la meta
+  base.steps = [];
+  for (let i = 13; i >= 0; i--) {
+    base.steps.push({
+      date: addDays(today, -i),
+      count: 5000 + Math.round(Math.random() * 6000),
+    });
+  }
+
   // Medidas: dos meses
   base.measurements = [
     {

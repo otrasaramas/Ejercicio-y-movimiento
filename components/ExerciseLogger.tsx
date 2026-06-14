@@ -30,7 +30,7 @@ export default function ExerciseLogger({
   onRemove: (id: string) => void;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl2 bg-white/60 shadow-sm">
+    <div className="overflow-hidden rounded-xl2 bg-panel shadow-sm">
       <div className="flex items-center justify-between px-5 pt-4">
         <div>
           <p className="font-sans text-xs uppercase tracking-wider text-coffee/50">

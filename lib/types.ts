@@ -78,6 +78,11 @@ export interface WeightEntry {
   kg: number;
 }
 
+export interface StepEntry {
+  date: string;
+  count: number;
+}
+
 export interface MeasurementEntry {
   date: string; // mensual
   // centímetros
@@ -96,5 +101,7 @@ export interface AppData {
   logs: Record<string, DayLog>; // por fecha
   weights: WeightEntry[];
   measurements: MeasurementEntry[];
+  steps: StepEntry[];
+  stepsGoal: number; // meta diaria de pasos
   earnedMedals: string[]; // ids de medallas conseguidas
 }
