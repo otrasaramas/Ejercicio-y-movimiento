@@ -8,17 +8,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Paleta inspirada en las imágenes de referencia
-        cream: "#F3EDE0",
-        sand: "#EAE1CE",
-        coffee: "#5A3A22",
-        espresso: "#3D2616",
-        sage: "#C6D6A8",
-        sageDeep: "#9CB07A",
-        clay: "#C97B4A",
-        sky: "#A9CCE8",
-        gold: "#E6B655",
-        ink: "#2B2118",
+        // Paleta moderna y cálida (estilo app de Apple) inspirada en el referente
+        cream: "#F5F3EE", // fondo papel
+        sand: "#ECE8DF", // tarjeta neutra
+        coffee: "#26241F", // casi negro (botones / texto fuerte)
+        espresso: "#1C1B19", // títulos
+        sage: "#A9B79E", // verde salvia
+        sageDeep: "#7E9072", // verde más profundo (logros)
+        clay: "#C08475", // terracota / rosa arcilla
+        sky: "#A9C0D4", // azul suave
+        gold: "#E2A75A", // ámbar
+        ink: "#1C1B19",
+        tan: "#D9BD97", // arena cálida
+        mist: "#E4E3DD", // gris claro
       },
       fontFamily: {
         serif: ["var(--font-serif)", "Georgia", "serif"],

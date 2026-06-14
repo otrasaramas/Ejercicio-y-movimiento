@@ -3,15 +3,26 @@
 @tailwind utilities;
 
 :root {
-  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-serif: "Space Mono", ui-monospace, "SFMono-Regular", monospace;
   --font-sans: ui-sans-serif, system-ui, sans-serif;
 }
 
 html,
 body {
-  background-color: #f3ede0;
-  color: #2b2118;
+  background-color: #f5f3ee;
+  color: #1c1b19;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Encabezados con el carácter bold de máquina de escribir */
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+h1 {
+  letter-spacing: -0.045em;
 }
 
 /* Oculta scrollbars horizontales en filas de chips */

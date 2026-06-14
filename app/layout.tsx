@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Space_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/lib/store";
 
-const serif = Cormorant_Garamond({
+// Tipografía de máquina de escribir para títulos y la identidad de la app
+const mono = Space_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "700"],
   variable: "--font-serif",
 });
 
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#5A3A22",
+  themeColor: "#F5F3EE",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -32,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={`${serif.variable} ${sans.variable}`}>
+    <html lang="es" className={`${mono.variable} ${sans.variable}`}>
       <body className="font-sans antialiased">
         <StoreProvider>{children}</StoreProvider>
       </body>

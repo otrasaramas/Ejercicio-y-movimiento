@@ -32,6 +32,13 @@ export function demoData(): AppData {
             }))
           : []
       ),
+      strength: profile.parts.includes("fuerza")
+        ? [
+            { id: "sd1", name: "Sentadillas", series: 3, reps: 12, weight: 10 },
+            { id: "sd2", name: "Peso muerto", series: 3, reps: 10, weight: 15 },
+            { id: "sd3", name: "Zancadas", series: 3, reps: 12 },
+          ]
+        : undefined,
       moodAfter: Math.min(5, energy + 1),
       completed: true,
     };
