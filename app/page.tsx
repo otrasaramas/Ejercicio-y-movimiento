@@ -5,14 +5,16 @@ import { useStore } from "@/lib/store";
 import TodayTab from "@/components/TodayTab";
 import RoutineTab from "@/components/RoutineTab";
 import ProgressTab from "@/components/ProgressTab";
+import AnalisisTab from "@/components/AnalisisTab";
 import WeightTab from "@/components/WeightTab";
 import MeasureTab from "@/components/MeasureTab";
 
-type Tab = "hoy" | "rutina" | "progreso" | "peso" | "medidas";
+type Tab = "hoy" | "rutina" | "analisis" | "progreso" | "peso" | "medidas";
 
 const tabs: { key: Tab; label: string; icon: string }[] = [
   { key: "hoy", label: "Hoy", icon: "☀️" },
   { key: "rutina", label: "Rutina", icon: "📋" },
+  { key: "analisis", label: "Análisis", icon: "📈" },
   { key: "progreso", label: "Progreso", icon: "🏅" },
   { key: "peso", label: "Peso", icon: "⚖️" },
   { key: "medidas", label: "Medidas", icon: "📏" },
@@ -33,6 +35,7 @@ export default function Home() {
           <>
             {tab === "hoy" && <TodayTab />}
             {tab === "rutina" && <RoutineTab />}
+            {tab === "analisis" && <AnalisisTab />}
             {tab === "progreso" && <ProgressTab />}
             {tab === "peso" && <WeightTab />}
             {tab === "medidas" && <MeasureTab />}

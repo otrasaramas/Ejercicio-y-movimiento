@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { todayStr, fmtShort, daysBetween, addDays } from "@/lib/dates";
+import { weekdayNames } from "@/lib/routine";
 import { Exercise, PartKey } from "@/lib/types";
 
 export default function RoutineTab() {
@@ -36,6 +37,14 @@ export default function RoutineTab() {
         ),
       },
     }));
+  };
+
+  const updateMuscle = (weekdayIndex: number, value: string) => {
+    setData((prev) => {
+      const rotation = [...prev.routine.muscleRotation];
+      rotation[weekdayIndex] = value;
+      return { ...prev, routine: { ...prev.routine, muscleRotation: rotation } };
+    });
   };
 
   const addExercise = (partKey: PartKey) => {
@@ -171,6 +180,7 @@ export default function RoutineTab() {
               </div>
             </div>
 
+            {part.key !== "fuerza" && (
             <ul className="space-y-2">
               {part.exercises.map((ex) => (
                 <li
@@ -214,19 +224,38 @@ export default function RoutineTab() {
                 </li>
               ))}
             </ul>
-
-            {part.key === "fuerza" && (
-              <p className="mt-2 px-1 font-sans text-xs text-coffee/50">
-                Rotación de grupos: {data.routine.muscleRotation.join(" · ")}
-              </p>
             )}
 
-            <button
-              onClick={() => addExercise(part.key)}
-              className="mt-2 w-full rounded-2xl border border-dashed border-coffee/25 py-2 font-sans text-sm text-coffee/50 hover:border-coffee/40 hover:text-coffee/70"
-            >
-              + Añadir ejercicio
-            </button>
+            {part.key === "fuerza" && (
+              <div className="mt-3 rounded-2xl bg-cream p-3">
+                <p className="mb-2 px-1 font-sans text-xs uppercase tracking-wider text-coffee/50">
+                  Grupo muscular por día
+                </p>
+                <div className="space-y-1.5">
+                  {weekdayNames.map((wd, i) => (
+                    <div key={wd} className="flex items-center gap-2">
+                      <span className="w-24 font-sans text-sm text-coffee/60">
+                        {wd}
+                      </span>
+                      <input
+                        value={data.routine.muscleRotation[i] ?? ""}
+                        onChange={(e) => updateMuscle(i, e.target.value)}
+                        className="flex-1 rounded-lg border border-coffee/15 bg-white px-2 py-1 font-sans text-sm text-coffee focus:outline-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {part.key !== "fuerza" && (
+              <button
+                onClick={() => addExercise(part.key)}
+                className="mt-2 w-full rounded-2xl border border-dashed border-coffee/25 py-2 font-sans text-sm text-coffee/50 hover:border-coffee/40 hover:text-coffee/70"
+              >
+                + Añadir ejercicio
+              </button>
+            )}
           </div>
         ))}
       </section>

@@ -29,14 +29,21 @@ export function demoData(): AppData {
               realValue: e.targetValue
                 ? Math.round(e.targetValue * profile.intensity)
                 : undefined,
+              level: p.key === "gimnasio" ? 6.5 : undefined,
             }))
           : []
       ),
       strength: profile.parts.includes("fuerza")
         ? [
-            { id: "sd1", name: "Sentadillas", series: 3, reps: 12, weight: 10 },
-            { id: "sd2", name: "Peso muerto", series: 3, reps: 10, weight: 15 },
-            { id: "sd3", name: "Zancadas", series: 3, reps: 12 },
+            { id: "sd1", name: "Sentadillas", series: 3, reps: 12, load: 10, loadUnit: "kg" as const },
+            { id: "sd2", name: "Peso muerto", series: 3, reps: 10, load: 15, loadUnit: "kg" as const },
+            { id: "sd3", name: "Zancadas", series: 3, reps: 12, load: 3, loadUnit: "banda" as const },
+          ]
+        : undefined,
+      yoga: profile.parts.includes("yoga")
+        ? [
+            { id: "yg1", name: "Perro boca abajo", series: 2, reps: 5 },
+            { id: "yg2", name: "Guerrero II", series: 2, reps: 4 },
           ]
         : undefined,
       moodAfter: Math.min(5, energy + 1),

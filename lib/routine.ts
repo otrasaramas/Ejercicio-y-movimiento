@@ -1,16 +1,18 @@
 import { AppData, PartKey, Routine } from "./types";
 
 // ---------- Rutina por defecto (la que describiste) ----------
+// Grupo muscular asignado a cada día de la semana.
+// Índice = Date.getDay(): 0=Domingo, 1=Lunes, … 6=Sábado
 export const defaultRoutine: Routine = {
   name: "Rutina de arranque",
   muscleRotation: [
-    "Abdomen",
-    "Brazos",
-    "Pecho",
-    "Piernas",
-    "Espalda",
-    "Glúteos",
-    "Core completo",
+    "Descanso / Core", // Domingo
+    "Piernas", // Lunes
+    "Brazos", // Martes
+    "Abdomen", // Miércoles
+    "Espalda", // Jueves
+    "Pecho", // Viernes
+    "Glúteos", // Sábado
   ],
   parts: [
     {
@@ -120,15 +122,51 @@ export function profileForEnergy(energy: number): EnergyProfile {
   return energyProfiles[Math.max(0, Math.min(5, energy))];
 }
 
-// Grupo muscular sugerido para una fecha (rotación por día del año)
+// Grupo muscular asignado al día de la semana de esa fecha
 export function muscleForDate(routine: Routine, dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  const dayOfYear = Math.floor(
-    (d.getTime() - new Date(d.getFullYear(), 0, 0).getTime()) / 86400000
-  );
-  const rot = routine.muscleRotation;
-  return rot[dayOfYear % rot.length];
+  const weekday = new Date(dateStr + "T00:00:00").getDay();
+  return routine.muscleRotation[weekday] ?? routine.muscleRotation[0];
 }
+
+export const weekdayNames = [
+  "Domingo",
+  "Lunes",
+  "Martes",
+  "Miércoles",
+  "Jueves",
+  "Viernes",
+  "Sábado",
+];
+
+// Ejercicios sugeridos por grupo muscular (para registrar lo que hiciste)
+export const muscleExercises: Record<string, string[]> = {
+  Piernas: ["Sentadillas", "Zancadas", "Peso muerto", "Prensa", "Pantorrillas"],
+  Brazos: ["Curl bíceps", "Fondos tríceps", "Curl martillo", "Press hombro"],
+  Abdomen: ["Plancha", "Crunch", "Elevación de piernas", "Bicicleta", "Russian twist"],
+  Espalda: ["Remo", "Jalón al pecho", "Superman", "Pull-over"],
+  Pecho: ["Flexiones", "Press banca", "Aperturas", "Press inclinado"],
+  Glúteos: ["Hip thrust", "Patada de glúteo", "Puente", "Sentadilla sumo"],
+  "Core completo": ["Plancha", "Mountain climbers", "Bird-dog", "Dead bug"],
+  "Descanso / Core": ["Plancha suave", "Respiración", "Bird-dog"],
+};
+
+export function exercisesForMuscle(muscle: string): string[] {
+  return muscleExercises[muscle] ?? [];
+}
+
+// Posturas de yoga sugeridas
+export const yogaPoses = [
+  "Postura del niño",
+  "Perro boca abajo",
+  "Gato-vaca",
+  "Guerrero I",
+  "Guerrero II",
+  "Triángulo",
+  "Cobra",
+  "Paloma",
+  "Torsión sentada",
+  "Savasana",
+];
 
 // ---------- Estado inicial ----------
 export function initialData(): AppData {

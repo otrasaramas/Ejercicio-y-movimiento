@@ -45,15 +45,17 @@ export interface ExerciseLog {
   exerciseId: string;
   done: boolean;
   realValue?: number; // lo que realmente hizo (ej. 5 min en vez de 10)
+  level?: number; // nivel/velocidad de la máquina (ej. caminata en 6.5)
 }
 
-// Un ejercicio de fuerza registrado en el día (ej. Sentadillas 3x12)
+// Un ejercicio de fuerza/yoga registrado en el día (ej. Sentadillas 3x12)
 export interface StrengthEntry {
   id: string;
   name: string;
   series?: number;
   reps?: number;
-  weight?: number; // kg opcional
+  load?: number; // carga: kg o número de banda
+  loadUnit?: "kg" | "banda";
 }
 
 export interface DayLog {
@@ -63,8 +65,9 @@ export interface DayLog {
   // Partes que decidió/pudo trabajar
   partsDone: Partial<Record<PartKey, boolean>>;
   exercises: ExerciseLog[];
-  // Registro detallado de la parte de fuerza
+  // Registro detallado de la parte de fuerza y de yoga
   strength?: StrengthEntry[];
+  yoga?: StrengthEntry[];
   moodAfter?: number; // 1-5, cómo se sintió después
   notes?: string;
   completed: boolean; // marcó el día como hecho

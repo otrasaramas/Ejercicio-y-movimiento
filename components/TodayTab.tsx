@@ -5,7 +5,9 @@ import { useStore, emptyLog } from "@/lib/store";
 import { energyProfiles, profileForEnergy, muscleForDate } from "@/lib/routine";
 import { fmtLong, todayStr, daysBetween } from "@/lib/dates";
 import { currentStreak } from "@/lib/progress";
-import { DayLog, RoutinePart, StrengthEntry } from "@/lib/types";
+import { DayLog, ExerciseLog, RoutinePart, StrengthEntry } from "@/lib/types";
+import { exercisesForMuscle, yogaPoses } from "@/lib/routine";
+import ExerciseLogger from "./ExerciseLogger";
 
 export default function TodayTab() {
   const { data, getLog, upsertLog } = useStore();
@@ -34,42 +36,49 @@ export default function TodayTab() {
     [data.routine.parts, profile.parts]
   );
 
-  const toggleExercise = (exId: string, done: boolean) => {
-    const others = log.exercises.filter((e) => e.exerciseId !== exId);
-    setLog({
-      ...log,
-      exercises: [...others, { exerciseId: exId, done }],
-    });
-  };
-
-  const setRealValue = (exId: string, val: number | undefined) => {
+  // Actualiza un ejercicio del gimnasio preservando los demás campos
+  const patchExercise = (exId: string, patch: Partial<ExerciseLog>) => {
     const ex = log.exercises.find((e) => e.exerciseId === exId);
     const others = log.exercises.filter((e) => e.exerciseId !== exId);
     setLog({
       ...log,
       exercises: [
         ...others,
-        { exerciseId: exId, done: ex?.done ?? false, realValue: val },
+        { exerciseId: exId, done: ex?.done ?? false, ...ex, ...patch },
       ],
     });
   };
+  const toggleExercise = (exId: string, done: boolean) =>
+    patchExercise(exId, { done });
+  const setRealValue = (exId: string, val: number | undefined) =>
+    patchExercise(exId, { realValue: val });
+  const setLevel = (exId: string, val: number | undefined) =>
+    patchExercise(exId, { level: val });
 
   const exLog = (exId: string) =>
     log.exercises.find((e) => e.exerciseId === exId);
 
-  // ---- Fuerza: ejercicios con series y repeticiones ----
-  const strength = log.strength ?? [];
-  const setStrength = (next: StrengthEntry[]) =>
-    setLog({ ...log, strength: next });
-  const addStrength = () =>
-    setStrength([
-      ...strength,
-      { id: "s" + Math.random().toString(36).slice(2, 7), name: "" },
-    ]);
-  const updateStrength = (id: string, patch: Partial<StrengthEntry>) =>
-    setStrength(strength.map((s) => (s.id === id ? { ...s, ...patch } : s)));
-  const removeStrength = (id: string) =>
-    setStrength(strength.filter((s) => s.id !== id));
+  // ---- Logger reutilizable para Fuerza y Yoga ----
+  const makeLogger = (key: "strength" | "yoga") => {
+    const list = log[key] ?? [];
+    const set = (next: StrengthEntry[]) => setLog({ ...log, [key]: next });
+    return {
+      list,
+      add: (name?: string) =>
+        set([
+          ...list,
+          {
+            id: "s" + Math.random().toString(36).slice(2, 7),
+            name: name ?? "",
+          },
+        ]),
+      update: (id: string, patch: Partial<StrengthEntry>) =>
+        set(list.map((s) => (s.id === id ? { ...s, ...patch } : s))),
+      remove: (id: string) => set(list.filter((s) => s.id !== id)),
+    };
+  };
+  const strengthL = makeLogger("strength");
+  const yogaL = makeLogger("yoga");
 
   return (
     <div className="space-y-6">
@@ -153,14 +162,33 @@ export default function TodayTab() {
         </h2>
         {activeParts.map((part, idx) =>
           part.key === "fuerza" ? (
-            <StrengthCard
+            <ExerciseLogger
               key={part.key}
               index={idx}
-              muscle={muscle}
-              entries={strength}
-              onAdd={addStrength}
-              onUpdate={updateStrength}
-              onRemove={removeStrength}
+              title="Fuerza"
+              place="En casa"
+              badge={muscle}
+              suggestions={exercisesForMuscle(muscle)}
+              showLoad
+              emptyHint="Toca un sugerido o añade los ejercicios que hiciste hoy con sus series, reps y carga (kg o banda)."
+              entries={strengthL.list}
+              onAdd={strengthL.add}
+              onUpdate={strengthL.update}
+              onRemove={strengthL.remove}
+            />
+          ) : part.key === "yoga" ? (
+            <ExerciseLogger
+              key={part.key}
+              index={idx}
+              title="Yoga"
+              place="En casa"
+              suggestions={yogaPoses}
+              showLoad={false}
+              emptyHint="Añade las posturas/ejercicios que hiciste con sus series y repeticiones."
+              entries={yogaL.list}
+              onAdd={yogaL.add}
+              onUpdate={yogaL.update}
+              onRemove={yogaL.remove}
             />
           ) : (
             <PartCard
@@ -168,9 +196,11 @@ export default function TodayTab() {
               part={part}
               index={idx}
               intensity={profile.intensity}
+              showLevel={part.key === "gimnasio"}
               exLog={exLog}
               onToggle={toggleExercise}
               onReal={setRealValue}
+              onLevel={setLevel}
             />
           )
         )}
@@ -229,16 +259,20 @@ function PartCard({
   part,
   index,
   intensity,
+  showLevel,
   exLog,
   onToggle,
   onReal,
+  onLevel,
 }: {
   part: RoutinePart;
   index: number;
   intensity: number;
-  exLog: (id: string) => { done: boolean; realValue?: number } | undefined;
+  showLevel?: boolean;
+  exLog: (id: string) => ExerciseLog | undefined;
   onToggle: (id: string, done: boolean) => void;
   onReal: (id: string, val: number | undefined) => void;
+  onLevel: (id: string, val: number | undefined) => void;
 }) {
   const [open, setOpen] = useState(true);
   const doneCount = part.exercises.filter((e) => exLog(e.id)?.done).length;
@@ -296,28 +330,56 @@ function PartCard({
                     <p className="text-[11px] text-coffee/40">{ex.note}</p>
                   )}
                 </div>
-                {target !== undefined && (
-                  <div className="flex items-center gap-1">
+                {showLevel && (
+                  <label className="flex flex-col items-center">
+                    <span className="text-[9px] uppercase tracking-wider text-coffee/40">
+                      Nivel
+                    </span>
                     <input
                       type="number"
-                      inputMode="numeric"
-                      value={el?.realValue ?? ""}
+                      inputMode="decimal"
+                      step="0.5"
+                      value={el?.level ?? ""}
                       onChange={(e) =>
-                        onReal(
+                        onLevel(
                           ex.id,
                           e.target.value === ""
                             ? undefined
                             : Number(e.target.value)
                         )
                       }
-                      placeholder={String(target)}
+                      placeholder="–"
                       className="w-12 rounded-xl border border-coffee/15 bg-cream px-2 py-1 text-center font-sans text-sm text-coffee placeholder:text-coffee/30 focus:border-coffee/40 focus:outline-none"
                     />
-                    <span className="text-[11px] text-coffee/40">
-                      /{target}
-                      {ex.unit}
+                  </label>
+                )}
+                {target !== undefined && (
+                  <label className="flex flex-col items-center">
+                    <span className="text-[9px] uppercase tracking-wider text-coffee/40">
+                      Hice
                     </span>
-                  </div>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        value={el?.realValue ?? ""}
+                        onChange={(e) =>
+                          onReal(
+                            ex.id,
+                            e.target.value === ""
+                              ? undefined
+                              : Number(e.target.value)
+                          )
+                        }
+                        placeholder={String(target)}
+                        className="w-12 rounded-xl border border-coffee/15 bg-cream px-2 py-1 text-center font-sans text-sm text-coffee placeholder:text-coffee/30 focus:border-coffee/40 focus:outline-none"
+                      />
+                      <span className="text-[11px] text-coffee/40">
+                        /{target}
+                        {ex.unit}
+                      </span>
+                    </div>
+                  </label>
                 )}
               </li>
             );
@@ -325,121 +387,5 @@ function PartCard({
         </ul>
       )}
     </div>
-  );
-}
-
-// ---- Tarjeta de Fuerza: registra ejercicios con series y repeticiones ----
-function StrengthCard({
-  index,
-  muscle,
-  entries,
-  onAdd,
-  onUpdate,
-  onRemove,
-}: {
-  index: number;
-  muscle: string;
-  entries: StrengthEntry[];
-  onAdd: () => void;
-  onUpdate: (id: string, patch: Partial<StrengthEntry>) => void;
-  onRemove: (id: string) => void;
-}) {
-  return (
-    <div className="overflow-hidden rounded-xl2 bg-white/60 shadow-sm">
-      <div className="flex items-center justify-between px-5 pt-4">
-        <div>
-          <p className="font-sans text-xs uppercase tracking-wider text-coffee/50">
-            Parte {index + 1} · En casa
-          </p>
-          <h3 className="font-serif text-2xl text-espresso">Fuerza</h3>
-        </div>
-        <span className="rounded-full bg-sage/40 px-3 py-1 font-sans text-xs font-semibold text-espresso">
-          {muscle}
-        </span>
-      </div>
-
-      <div className="space-y-2 px-3 pb-3 pt-3">
-        {entries.length === 0 && (
-          <p className="px-2 font-sans text-sm text-coffee/40">
-            ¿Qué ejercicios hiciste hoy? Añade cada uno con sus series y reps.
-          </p>
-        )}
-
-        {entries.map((s, i) => (
-          <div key={s.id} className="rounded-2xl bg-cream px-3 py-2.5">
-            <div className="flex items-center gap-2">
-              <span className="font-sans text-xs font-semibold text-coffee/40">
-                {i + 1}
-              </span>
-              <input
-                value={s.name}
-                onChange={(e) => onUpdate(s.id, { name: e.target.value })}
-                placeholder="Ejercicio (ej. Sentadillas)"
-                className="flex-1 bg-transparent font-sans text-sm text-coffee placeholder:text-coffee/30 focus:outline-none"
-              />
-              <button
-                onClick={() => onRemove(s.id)}
-                className="text-coffee/30 hover:text-clay"
-                aria-label="Eliminar"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="mt-2 flex gap-2 pl-5">
-              <NumField
-                label="Series"
-                value={s.series}
-                onChange={(v) => onUpdate(s.id, { series: v })}
-              />
-              <NumField
-                label="Reps"
-                value={s.reps}
-                onChange={(v) => onUpdate(s.id, { reps: v })}
-              />
-              <NumField
-                label="Kg"
-                value={s.weight}
-                onChange={(v) => onUpdate(s.id, { weight: v })}
-              />
-            </div>
-          </div>
-        ))}
-
-        <button
-          onClick={onAdd}
-          className="w-full rounded-2xl border border-dashed border-coffee/25 py-2.5 font-sans text-sm text-coffee/50 hover:border-coffee/40 hover:text-coffee/70"
-        >
-          + Añadir ejercicio
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function NumField({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value?: number;
-  onChange: (v: number | undefined) => void;
-}) {
-  return (
-    <label className="flex flex-1 flex-col items-center gap-1 rounded-xl bg-white/70 px-2 py-1.5">
-      <span className="font-sans text-[10px] uppercase tracking-wider text-coffee/40">
-        {label}
-      </span>
-      <input
-        type="number"
-        inputMode="numeric"
-        value={value ?? ""}
-        onChange={(e) =>
-          onChange(e.target.value === "" ? undefined : Number(e.target.value))
-        }
-        placeholder="–"
-        className="w-full bg-transparent text-center font-serif text-lg text-espresso placeholder:text-coffee/25 focus:outline-none"
-      />
-    </label>
   );
 }
